@@ -14,8 +14,6 @@ function jVPlayer(){
   rootLayer.classList.add('jvp-root-layer');
   rootLayer.appendChild(v);
 
-
-  // 
   prefix = (function (){
     var scripts = document.getElementsByTagName('script');
     for (var i = 0; i < scripts.length; ++i){
@@ -56,26 +54,25 @@ function jVPlayer(){
     v.controls = param.controls || false;
 
     v.src = param.src
-    v.addEventListener('loadstart', function(e){
-      if(param.size === 'auto'){
+    if(param.size === 'auto'){
+      v.addEventListener('loadstart', function(e){        
         rootLayer.style.width = v.clientWidth+'px';
         rootLayer.style.height = v.clientHeight+'px';
-      } else if(param.size.indexOf('%') > -1){
-        rootLayer.style.width = param.size;
-        rootLayer.style.height = param.size;
-      } else if(param.size.indexOf('x') > -1){
-        var w = param.size.split('x')[0];
-        var h = param.size.split('x')[1];
-        rootLayer.style.width = w+'px';
-        rootLayer.style.height = h+'px';
-      }else{
-        rootLayer.style.width = v.clientWidth+'px';
-        rootLayer.style.height = v.clientHeight+'px';
-      }
-      v.style.width = '100%';
-      v.style.height = '100%';
-    })
+      });
+    } else if(param.size.indexOf('%') > -1){
+      rootLayer.style.width = param.size;
+      rootLayer.style.height = param.size;
+    } else if(param.size.indexOf('x') > -1){
+      var w = param.size.split('x')[0];
+      var h = param.size.split('x')[1];
+      rootLayer.style.width = w+'px';
+      rootLayer.style.height = h+'px';
+    }else{
+      rootLayer.style.width = '100%';
+      rootLayer.style.height = '100%';
+    }
+    v.style.width = '100%';
+    v.style.height = '100%';
 
-      
   }
 }
