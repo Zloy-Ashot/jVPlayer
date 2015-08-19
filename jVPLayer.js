@@ -30,10 +30,13 @@ function jVPlayer(){
   includeLDR.open('POST', prefix+'player/include.js', false);
   includeLDR.send();
   var includeSRC = includeLDR.responseText
-    , Include = (new Function('module', includeSRC+'return module.exports;'))({});
+    , Include = (new Function('module, player', includeSRC+'return module.exports;'))({}, this);
 
   include = new Include(prefix);
 
+  this.controls = function(state){
+    v.controls = state;
+  }
 
   this.init = function(param){
     window.addEventListener('load', function(e){
