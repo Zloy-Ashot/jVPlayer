@@ -17,12 +17,18 @@ function Include(pref){
   lclPrefix = 'locales/';
   plrPrefix = 'player/';
   thmPrefix = 'themes/';
+  include = this;
 
   BaseModule = this.module('BaseModule').constructor;
-  this.module('Events');
-  new this.constructorList.Events.constructor();
 
-  include = this;
+  var includeList = include.JSONVar('player/list');
+  includeList.forEach(function(name){
+    include.module(name);
+    new include.constructorList[name].constructor();
+    player.log('\''+name+'\' module loaded');
+  });
+
+
 }
 
 Include.prototype = {
@@ -41,7 +47,7 @@ Include.prototype = {
     return this.constructorList[name];
   },
   JSONVar: function(path){
-    var JSONSrc = this.plainText(path);
+    var JSONSrc = this.plainText(path+'.json');
     return JSON.parse(JSONSrc);
   }
 }

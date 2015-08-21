@@ -1,17 +1,20 @@
 /*Events.js*/
 
-var eventsNames = {};
+var eventsNames;
 
 function Events(param){
   var self = player.events = {};
+  eventsNames = this.include.JSONVar('baseEvents');
+
   self.add = function(name){
+    if(name in eventsNames) return;
     eventsNames[name] = [];
   };
   self.addListener = function(name, cb){
     try{
       eventsNames[name].push(cb);
     }catch(e){
-      console.error('Event name \''+name+'\' was not found');
+      player.error('Event name \''+name+'\' was not found');
     }
   };
   self.catch = function(name){
@@ -20,9 +23,13 @@ function Events(param){
         cb.call(player, name);
       });
     }catch(e){
-      console.error('Event name \''+name+'\' was not found');
+      player.error('Event name \''+name+'\' was not found');
     }
   };
+
+  self.addListener('init', function(){
+    player.log('jVPlayer modules loaded');
+  });
 }
 
 Events.prototype = new BaseModule(prefix);

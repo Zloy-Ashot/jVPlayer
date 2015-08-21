@@ -1,12 +1,34 @@
 
-function jVPlayer(){
+function jVPlayer(DBG){
   var player = this
     , prefix
     , include = {};
 
+  DBG = DBG || false;
+
   function createElement(tn){
     return document.createElement(tn);
   }
+
+  this.log = function(msg){
+    console.log('['+this.timer.getTime()+'] '+msg);
+  };
+
+  this.error = function(msg){
+    console.error('['+this.timer.getTime()+'] '+msg);
+  };
+
+  if(!DBG)
+  this.error = this.log = function(){};
+
+  var beginTime = new Date();
+  this.timer = {
+    getTime: function(){
+      return (new Date() - beginTime) / 1000;
+    }
+  };
+
+  player.log('jVPlayer init begin');
 
   var rootLayer = createElement('div')
     , v = createElement('video');
@@ -32,29 +54,34 @@ function jVPlayer(){
   var includeSRC = includeLDR.responseText
     , Include = (new Function('module, player', includeSRC+'return module.exports;'))({}, this);
 
-  include = new Include(prefix);
 
+  // TODO
   this.controls = function(state){
     v.controls = state;
   }
 
   this.init = function(param){
+
     window.addEventListener('load', function(e){
+      player.log('Window load');
       init.call(player, param);
     });
   }
 
+  include = new Include(prefix);
+
+  this.events.catch('init');
   function init(param){
     var rootRoot = document.querySelector(param.selector);
     try{
       rootRoot.appendChild(rootLayer);
     } catch(e){
-      console.error('Selector was not specified');
+      player.error('Selector was not specified');
       return;
     }
 
     param.size = param.size || 'auto';
-    v.controls = param.controls || false;
+    v.controls = false;
 
     v.src = param.src
     if(param.size === 'auto'){
