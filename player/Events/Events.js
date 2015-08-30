@@ -28,7 +28,7 @@ function Events(param){
   };
 
   self.addListener('init', function(){
-    player.log('jVPlayer modules loaded');
+    player.log('jVPlayer: All modules loaded');
   });
 }
 

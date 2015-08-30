@@ -24,10 +24,10 @@ function Include(pref){
   var includeList = include.JSONVar('player/list');
   includeList.forEach(function(name){
     include.module(name);
-    new include.constructorList[name].constructor();
-    player.log('\''+name+'\' module loaded');
+    if(include.constructorList[name].independent)
+      new include.constructorList[name].constructor();
+    player.log('\''+name+'\': module loaded');
   });
-
 
 }
 
@@ -38,6 +38,7 @@ Include.prototype = {
     var textLdr = new XMLHttpRequest();
     textLdr.open('POST', basPrefix+path, false);
     textLdr.send();
+    if(textLdr.status != 200) return null;
     return textLdr.responseText;
   },
   module: function(name){
@@ -47,8 +48,23 @@ Include.prototype = {
     return this.constructorList[name];
   },
   JSONVar: function(path){
-    var JSONSrc = this.plainText(path+'.json');
+    var JSONSrc;
+    JSONSrc = this.plainText(path+'.json');
+    if(!JSONSrc) return {};
     return JSON.parse(JSONSrc);
+  },
+  theme: function(themeName, layoutName){
+    player.log('Using theme: \''+themeName+'\'');
+    var thmConfig = include.JSONVar(thmPrefix+themeName+'/conf');
+    var layoutRules;
+    if(layoutName){
+      layoutRules = include.JSONVar(thmPrefix+themeName+'/layout/'+layoutName);
+      player.log('Theme loaded with layout: \''+layoutName+'\'');
+    }else{
+      layoutRules = include.JSONVar(thmPrefix+themeName+'/layout/'+thmConfig.defaultLayout);
+      player.log('No layout name. Using default: \''+thmConfig.defaultLayout+'\'');
+    }
+    return layoutRules;
   }
 }
 
@@ -63,7 +79,10 @@ function makeModule(MDLSrc, prefix){
   ].join();
 
   return (new Function(MdlInitParam, fullSrc))(
-    {constructor: BaseModule},
+    {
+      constructor: BaseModule,
+      independent: true
+    },
     BaseModule,
     include,
     player,

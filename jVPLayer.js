@@ -18,6 +18,11 @@ function jVPlayer(DBG){
     console.error('['+this.timer.getTime()+'] '+msg);
   };
 
+  this.dir = function(v){
+    v = v || {};
+    console.log('[%f] %o', this.timer.getTime(), v);
+  }
+
   if(!DBG)
   this.error = this.log = function(){};
 
@@ -26,6 +31,11 @@ function jVPlayer(DBG){
     getTime: function(){
       return (new Date() - beginTime) / 1000;
     }
+  };
+
+  var DOMElementsGet = this.DOMElementsGet = {};
+  DOMElementsGet.rootLayer = function(){
+    return rootLayer;
   };
 
   player.log('jVPlayer init begin');
@@ -104,5 +114,7 @@ function jVPlayer(DBG){
     v.style.width = '100%';
     v.style.height = '100%';
 
+    param.theme = param.theme || 'default';
+    player.makeLayout(param.theme, param.layout);
   }
 }
