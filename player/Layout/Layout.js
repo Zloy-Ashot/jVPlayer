@@ -9,7 +9,10 @@ function Layout(theme, layout){
   var DOMRootLayer = player.DOMElementsGet.rootLayer();
   DOMRootLayer.style.position = 'relative'
   var layoutRules = {
-    properties:{sizeAndPosition:{}},
+    properties:{
+      sizeAndPosition:{},
+      classList: ""
+    },
     childs: playerInclude.theme(theme, layout)
   };
   var rootLayer = new playerInclude.constructorList.Layers.constructor(layoutRules, null);

@@ -12,6 +12,11 @@ function Layer(param, parent){
     _DOMElement.style[i] = style[i];
   };
   _DOMElement.style.position = 'absolute';
+  player.dir(prop);
+  prop.classList.split(' ').forEach(function(className){
+    if(className)
+      _DOMElement.classList.add(className);
+  });
 
   param.childs = param.childs || [];
 
